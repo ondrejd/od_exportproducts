@@ -4,6 +4,8 @@
  *
  * @author Ondřej Doněk <ondrejd@gmail.com>
  * @link https://github.com/ondrejd/odexportproducts for the canonical source repository
+ * @link https://stackoverflow.com/questions/46349058/create-xml-export-feed-in-prestashop
+ * @link http://muj-antikvariat.cz/pro-programatory
  * @license https://www.gnu.org/licenses/gpl-3.0.en.html GNU General Public License 3.0
  * @version 1.0.0
  * @package odexportproducts

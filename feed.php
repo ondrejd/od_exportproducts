@@ -8,10 +8,14 @@
  * @link http://muj-antikvariat.cz/pro-programatory for the output XML feed specification.
  */
 
+error_reporting( -1 );
+
 include( '../../config/config.inc.php' );
 include( '../../init.php' );
-include( 'inc/OdXmlExporter.php' );
+
+include( 'inc/odexportproducts/CategoryCodebook.php' );
+include( 'inc/odexportproducts/XmlExport.php' );
 
 // Make export
-$xmlExporter = new OdXmlExporter( $id_lang );
+$xmlExporter = new \odexportproducts\XmlExport();
 $xmlExporter->createXmlFeed();
