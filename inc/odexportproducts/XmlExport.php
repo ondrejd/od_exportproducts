@@ -19,6 +19,7 @@ namespace odexportproducts;
  * @since 1.0.0
  */
 class XmlExport {
+
     /**
      * @var int $langId ID of the currently used language.
      * @since 1.0.0
@@ -26,7 +27,7 @@ class XmlExport {
     protected $langId;
 
     /**
-     * @var SimpleXMLElement $xml
+     * @var \SimpleXMLElement $xml
      * @since 1.0.0
      */
     protected $xml;
@@ -37,13 +38,14 @@ class XmlExport {
      * @param int $langId
      * @return void
      * @since 1.0.0
-     * @uses Context::getContext()
+     * @uses \Context::getContext()
      */
     public function __construct( $langId ) {
-        $context = Context::getContext();
+        $context = \Context::getContext();
 
         $this->langId = $context->language->id;
-        $this->xml = new SimpleXMLElement( '<books></books>' );
+        $this->xml = new \SimpleXMLElement( '<books></books>' );
+        
     }
 
     /**
@@ -53,11 +55,11 @@ class XmlExport {
      * @since 1.0.0
      */
     public function createXmlFeed() {
-        $productObj = new Product();
+        $productObj = new \Product();
         $products = $productObj->getProducts( $this->langId, 0, 0, 'id_product', 'DESC' );
 
         foreach( $products as $productArr ) {
-            $product = new Product( $productArr['id_product'], true, $this->langId );
+            $product = new \Product( $productArr['id_product'], true, $this->langId );
             $this->createProductXml( $product );
         }
 
@@ -68,41 +70,37 @@ class XmlExport {
      * Creates XML from given product (commented out are fields that are not 
      * used in export for now).
      *
-     * @var Product $product
+     * @var \Product $product
      * @return void
      * @since 1.0.0
      */
-    protected function createProductXml( Product $product ) {
+    protected function createProductXml( \Product $product ) {
         $productXml = $this->xml->addChild( 'book' );
         $productXml->addChild( 'id', $product->id );
         $productXml->addChild( 'title', $product->name );
+        $productXml->addChild( 'description', $product->description );
 
         if( ! empty( $product->description_short ) ) {
             $productXml->addChild( 'author', $product->description_short );
         }
 
-        //$productXml->addChild( 'illustrator', $product->xxx );
-        //$productXml->addChild( 'publisher', $product->xxx );
-        //$productXml->addChild( 'year', $product->xxx );
-        //$productXml->addChild( 'pages', $product->xxx );
-        $productXml->addChild( 'description', $product->description );
-        //$productXml->addChild( 'category', $product->xxx );
-        //$productXml->addChild( 'category', $this->getCategoryName() );
-        //$productXml->addChild( 'url', $this->getPrettyUrl( $product ) );
-        //$productXml->addChild( 'imgurl', $product->xxx );
-        //$productXml->addChild( 'price', $product->xxx );
-        //$productXml->addChild( 'inserted', $product->xxx );
+        $productCat = $this->getCategoryName( $product );
+        $exportCat = CategoryCodebook::getCategoryByName( $productCat );
+        $productXml->addChild( 'category', $exportCat );
+
+        //$productUrl = $this->getPrettyUrl( $product );
+        //$productXml->addChild( 'url', $productUrl );
     }
 
     /**
      * Retrieves name of the product's category.
      *
-     * @param Product $product
+     * @param \Product $product
      * @return string
      * @since 1.O.0
      */
-    protected function getCategoryName( Product $product ) {
-        $category = new Category( $product->id_category_default, $this->langId );
+    protected function getCategoryName( \Product $product ) {
+        $category = new \Category( $product->id_category_default, $this->langId );
         return $category->name;
     }
 
@@ -110,11 +108,11 @@ class XmlExport {
      * Returns product's pretty URL.
      *
      * @link https://stackoverflow.com/questions/22633395/get-product-url-using-prestashop-api
-     * @param Product $product
+     * @param \Product $product
      * @return string
      * @since 1.0.0
      */
-    protected function getPrettyUrl( Product $product ) {
+    protected function getPrettyUrl( \Product $product ) {
         $url = 'http://antikvariatelement.cz/index.php?controller=product&id_product=' . $product->id;
         $ch = curl_init( $url );
         curl_exec( $ch );
@@ -129,7 +127,6 @@ class XmlExport {
      * @since 1.0.0
      */
     public function outputXml() {
-        header( 'Content-type: text/xml' );
         print( $this->xml->asXML() );
     }
 }

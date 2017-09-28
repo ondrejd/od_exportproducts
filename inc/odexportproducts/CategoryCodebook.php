@@ -21,16 +21,33 @@ namespace odexportproducts;
 class CategoryCodebook {
 
     /**
-     * @const array
-     * @since 1.0.0
-     */
-    const DEFAULT_CATEGORIES = [];
-
-    /**
      * @const string
      * @since 1.0.0
      */
-    const DEFAULT_CATEGORY = '';
+    const DEFAULT_CATEGORY = 'Ostatní';
+
+    /**
+     * @return array Returns array with categories codebook.
+     * @since 1.0.0
+     */
+    public static function getCategories() {
+        return array(
+            'Psychologie, filozofie, duchovo, náboženství, zdraví' => 'Psychologie',
+            'Próza, romány, povídky, detektivky, beletrie' => 'Beletrie',
+            'Místopis' => 'Místopis',
+            'Sci-fi, fantasy, upíři' => 'Sci-fi',
+            'Historie, politika' => 'Historie',
+            'Umění, poezie, architektura' => 'Umění',
+            'Učebnice' => 'Učebnice',
+            'Pro děti' => 'Pro děti',
+            'Vojenské, válečné' => 'Vojenské',
+            'Fauna, flóra, zahrada, zemědělství' => 'Příroda',
+            'Osobnosti, životopis' => 'Osobnosti',
+            'Odborné, slovníky' => 'Odborné',
+            'Ostatní' => 'Ostatní',
+            'Cizojazyčná' => 'Cizojazyčná',
+        );
+    }
 
     /**
      * Vrátí správný název kategorie (dle názvu).
@@ -39,26 +56,20 @@ class CategoryCodebook {
      * @return string
      * @since 1.0.0
      */
-    public static getCategoryByName( $category ) {
-        $ret = '';
+    public static function getCategoryByName( $category ) {
+        $cats = self::getCategories();
+        $ret = array_filter(
+                $cats,
+                function( $k ) use ( $category ) {
+                    return ( $k == $category);
+                },
+                ARRAY_FILTER_USE_KEY
+        );
 
-        if( array_key_exists( $category, self::DEFAULT_CATEGORIES ) ) {
-            return self::DEFAULT_CATEGORIES[$category];
+        if( count( $ret ) > 0 ) {
+            return $ret[0];
         }
 
         return self::DEFAULT_CATEGORY;
-    }
-    
-    /**
-     * Vrátí správný název kategorie (dle ID).
-     *
-     * @param integer $categoryId
-     * @return string
-     * @since 1.0.0
-     */
-    public static getCategoryById( $categoryId ) {
-        $ret = '';
-        //...
-        return $ret;
     }
 }
